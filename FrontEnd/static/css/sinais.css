@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: #f8f9fa;
+  padding: 20px 0;
+}
+
+.signal-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signal-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.fs-1 {
+  font-size: 3rem;
+}
+
+.fw-bold{
+  color: #C79B50;
+}
+
+.text-muted{
+  color: #D8C29E
+}
+
+footer {
+  background-color: #f8f9fa;
+  padding: 20px 0;
+  color: #6c757d;
+}
+
+input[type="text"] {
+  font-size: 1.1rem;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 15px;
+  }
+}
+
