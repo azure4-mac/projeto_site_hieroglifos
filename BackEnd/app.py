@@ -36,5 +36,17 @@ def get_hieroglyphs():
 
     return jsonify(result)
 
+@app.route('/tradutor')
+def tradutor():
+    return render_template('tradutor.html')
+
+@app.route('/api/traduzir')
+def traduzir():
+    from flask import request
+    texto = request.args.get("texto", "")
+    resultado = ''.join(['' if c != ' ' else ' ' for c in texto])
+    return jsonify({'resultado': resultado})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
