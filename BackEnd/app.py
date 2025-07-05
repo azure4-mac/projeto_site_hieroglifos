@@ -7,7 +7,7 @@ from flask import Flask, render_template, jsonify, redirect, url_for
 load_dotenv()
 
 connection_db = psycopg.connect(
-    "dbname=amnipora user=postgres password=3f@db host=164.90.152.205 port=80"
+    "dbname= user=postgres password= host=164.90.152.205 port="
 )
 
 app = Flask(__name__, static_folder='../FrontEnd/static', template_folder='../FrontEnd/templates')
