@@ -7,7 +7,7 @@ from flask import Flask, render_template, jsonify, redirect, url_for
 load_dotenv()
 
 connection_db = psycopg.connect(
-    "dbname= user=postgres password= host=164.90.152.205 port="
+    "dbname=mac user=postgres password=3f@db host=164.90.152.205 port=80"
 )
 
 app = Flask(__name__, static_folder='../FrontEnd/static', template_folder='../FrontEnd/templates')
@@ -48,7 +48,6 @@ def traduzir():
     if not texto:
         return jsonify({'erro': 'Texto não fornecido'}), 400
 
-    # Busca hieróglifos do banco de dados para montar o mapeamento real
     with connection_db.cursor() as cursor:
         cursor.execute("SELECT symbol, gardiner FROM hieroglifo")
         hieroglyphs = cursor.fetchall()
@@ -56,7 +55,6 @@ def traduzir():
 
     resultado = ''.join([mapa.get(c.lower(), c) for c in texto])
 
-    # Se não encontrou nada ou o usuário quiser uma tradução mais avançada, chama o ChatGPT
     if not resultado.strip() or request.args.get("usar_gpt", "false").lower() == "true":
         openai.api_key = os.getenv("OPENAI_API_KEY")
         prompt = f"Traduza o seguinte texto para hieróglifos egípcios: {texto}"
