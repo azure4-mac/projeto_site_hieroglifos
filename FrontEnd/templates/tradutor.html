@@ -18,6 +18,18 @@
     </div>
   </header>
 
+      <!-- NAVEGAÇÃO -->
+  <nav class="position-absolute top-0 start-50 translate-middle-x w-100 py-3 px-4" style="z-index: 10;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+      <!-- Links -->
+      <div class="d-flex gap-3 flex-wrap">
+        <a href="{{ url_for('index') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Inicio</a>
+        <a href="{{ url_for('sinais') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Pesquise os Sinais</a>
+      </div>
+    </div>
+  </nav> 
+
   <!-- BLOCO DE TRADUÇÃO -->
   <section class="py-5">
     <div class="container">
