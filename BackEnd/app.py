@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import psycopg
 from flask import Flask, render_template, jsonify, redirect, url_for
 
-# Carregar variáveis de ambiente
 load_dotenv()
 
 connection_db = psycopg.connect(
