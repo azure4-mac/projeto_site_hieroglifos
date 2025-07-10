@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import psycopg
-from flask import Flask, render_template, jsonify, requests
+from flask import Flask, render_template, jsonify, redirect, url_for
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -47,25 +47,36 @@ def tradutor():
 import openai
 from flask import request
 
-FABRICIUS_API_URL = "http://localhost:8000/translate"
-
 @app.route('/api/traduzir', methods=['GET'])
 def traduzir():
     texto = request.args.get("texto", "")
     if not texto:
         return jsonify({'erro': 'Texto não fornecido'}), 400
 
-    gardiner_codes = [c.upper() for c in texto if c.isalpha()]  
-    try:
-        response = requests.post(FABRICIUS_API_URL, json={"codes": gardiner_codes})
-        if response.status_code != 200:
-            return jsonify({'erro': 'Erro na API do Fabricius', 'detalhe': response.text}), 500
+    with connection_db.cursor() as cursor:
+        cursor.execute("SELECT symbol, gardiner FROM hieroglifo")
+        hieroglyphs = cursor.fetchall()
+        mapa = {h[1][0].lower(): h[0] for h in hieroglyphs if h[1]}
 
-        data = response.json()
-        return jsonify({'resultado': data.get("translation", "Tradução não encontrada")})
+    resultado = ''.join([mapa.get(c.lower(), c) for c in texto])
 
-    except Exception as e:
-        return jsonify({'erro': 'Falha ao conectar com o Fabricius', 'detalhe': str(e)}), 500
+    if not resultado.strip() or request.args.get("usar_gpt", "false").lower() == "true":
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        prompt = f"Traduza o seguinte texto para hieróglifos egípcios: {texto}"
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-4.0-turbo",
+                messages=[
+                    {"role": "system", "content": "Você é um tradutor de português para hieróglifos egípcios."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=100
+            )
+            resultado = response.choices[0].message.content.strip()
+        except Exception as e:
+            return jsonify({'erro': 'Erro ao acessar o ChatGPT', 'detalhe': str(e)}), 500
+
+    return jsonify({'resultado': resultado})
 
 
 if __name__ == '__main__':
