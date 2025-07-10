@@ -54,6 +54,17 @@
   </div>
 </header>
 
+    <!-- NAVEGAÇÃO ESTILO MODERNO -->
+  <nav class="position-absolute top-0 start-50 translate-middle-x w-100 py-3 px-4" style="z-index: 10;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+      <!-- Links -->
+      <div class="d-flex gap-3 flex-wrap">
+        <a href="{{ url_for('sinais') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Pesquise os Sinais</a>
+        <a href="{{ url_for('artigo') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Artigo</a>
+        <a href="{{ url_for('tradutor') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Tradutor</a>
+      </div>
+    </nav>    
   <!-- SOBRE O PROJETO -->
   <section class="container text-center my-5">
     <h2 class="fw-bold mb-3">Sobre o Projeto</h2>
@@ -93,26 +104,28 @@
     </div>
   </section>
 
-    <!-- SOBRE NÓS -->
-  <section class="container text-center my-5">
-    <h2 class="fw-bold mb-3">Sobre Nós</h2>
-    <p class="text-muted mx-auto" style="max-width: 700px;">
-      Somos estudantes do Instituto Federal Catarinense - Campus Concórdia, e desenvolvemos um projeto que explora como a Inteligência Artificial pode colaborar na tradução de hieróglifos e na investigação historiográfica. Unimos tecnologia e pesquisa acadêmica para criar soluções inovadoras que auxiliem historiadores e entusiastas da história antiga.
-    </p>
-    <a href="{{ url_for('artigo') }}" class="btn btn-outline-dark mt-3">Veja mais</a>
-  </section>
+<section class="container my-5">
+  <div class="row text-center">
+    <!-- Coluna: Sobre Nós -->
+    <div class="col-md-6 mb-5">
+      <h2 class="fw-bold mb-3">Sobre Nós</h2>
+      <p class="text-muted mx-auto" style="max-width: 700px;">
+        Somos estudantes do IFC, e desenvolvemos um projeto que explora como a Inteligência Artificial pode colaborar na tradução de hieróglifos e na investigação historiográfica.</p>
+      <a href="{{ url_for('artigo') }}" class="btn btn-outline-dark mt-3">Veja mais</a>
+    </div>
 
-
-  <!-- BLOCO TRADUTOR -->
-  <section class="py-5">
-    <div class="container text-center">
-      <h3 class="fw-bold">Traduções de Hieróglifos</h3>
-      <p class="text-muted mb-3" style="max-width: 650px; margin: auto;">
+    <!-- Coluna: Traduções de Hieróglifos -->
+    <div class="col-md-6 mb-5">
+      <h3 class="fw-bold mb-3">Traduções de Hieróglifos</h3>
+      <p class="text-muted mx-auto" style="max-width: 700px;">
         A tradução de sistemas antigos é um desafio que envolve linguística, arqueologia e tecnologia. Nosso tradutor facilita a conversão entre transliterações e sinais visuais.
       </p>
-      <a href="{{ url_for('tradutor') }}" class="btn btn-dark px-4">Ir para o Tradutor</a>
+      <a href="{{ url_for('tradutor') }}" class="btn btn-outline-dark mt-3">Ir para o Tradutor</a>
     </div>
-  </section>
+  </div>
+</section>
+
+
 
   <!-- CONTATO -->
   <footer class="text-dark text-center py-4 mt-5">
