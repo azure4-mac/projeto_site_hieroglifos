@@ -20,6 +20,11 @@ def index():
 def sinais():
     return render_template('sinais.html')
 
+@app.route('/artigo')
+def artigo():
+    return render_template('artigo.html')
+
+
 @app.route('/api/hieroglyphs', methods=['GET'])
 def get_hieroglyphs():
     with connection_db.cursor() as cursor:
