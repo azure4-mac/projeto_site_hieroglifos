@@ -10,22 +10,24 @@
 <body>
 
   <!-- Cabeçalho -->
-  <header class="text-center py-4 text-light bg-dark">
-    <h1>Hieróglifos Egípcios</h1>
-    <p>Explore os símbolos e seus significados.</p>
+  <header class="py-5 text-center text-light bg-dark" style="height: 45vh; overflow: hidden;">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Hieróglifos Egípcios</h1>
+      <p class="lead">Explore os símbolos e seus significados.</p>
+    </div>
   </header>
 
-  <!-- NAVEGAÇÃO -->
-  <nav class="position-absolute top-0 start-50 translate-middle-x w-100 py-3 px-4" style="z-index: 10;">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-      <!-- Links -->
+  <!-- NAVBAR -->
+  <nav id="navbarTopo" class="navbar fixed-top px-4 py-2 bg-white bg-opacity-75 shadow-sm transition">
+    <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div class="d-flex gap-3 flex-wrap">
-        <a href="{{ url_for('index') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Inicio</a>
-        <a href="{{ url_for('tradutor') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Tradutor</a>
+        <a href="{{ url_for('index') }}" class="text-dark text-decoration-none fw-semibold">Inicio</a>
+        <a href="{{ url_for('artigo') }}" class="text-dark text-decoration-none fw-semibold">Artigo</a>
+        <a href="{{ url_for('tradutor') }}" class="text-dark text-decoration-none fw-semibold">Tradutor</a>
       </div>
     </div>
-  </nav> 
+  </nav>
+
 
   <div class="container mt-4">
 

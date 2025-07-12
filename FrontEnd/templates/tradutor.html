@@ -5,30 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tradutor de Hieróglifos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/sinais.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}" />
   <script src="https://unpkg.com/scrollreveal"></script>
 </head>
 <body>
 
   <!-- HEADER -->
-  <header class="py-5 text-center text-light bg-dark"style="height: 45vh; overflow: hidden">
+  <header class="py-5 text-center text-light bg-dark" style="height: 45vh; overflow: hidden;">
     <div class="container">
       <h1 class="display-4 fw-bold">Tradutor de Hieróglifos</h1>
       <p class="lead">Digite uma transliteração e veja sua forma hieroglífica usando IA.</p>
     </div>
   </header>
 
-      <!-- NAVEGAÇÃO -->
-  <nav class="position-absolute top-0 start-50 translate-middle-x w-100 py-3 px-4" style="z-index: 10;">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-      <!-- Links -->
+  <!-- NAVBAR -->
+  <nav id="navbarTopo" class="navbar fixed-top px-4 py-2 bg-white bg-opacity-75 shadow-sm transition">
+    <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div class="d-flex gap-3 flex-wrap">
-        <a href="{{ url_for('index') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Inicio</a>
-        <a href="{{ url_for('sinais') }}" class="text-dark text-decoration-none bg-white bg-opacity-75 rounded-pill px-4 py-2 fw-semibold">Pesquise os Sinais</a>
+        <a href="{{ url_for('index') }}" class="text-dark text-decoration-none fw-semibold">Inicio</a>
+        <a href="{{ url_for('sinais') }}" class="text-dark text-decoration-none fw-semibold">Pesquise os Sinais</a>
+        <a href="{{ url_for('artigo') }}" class="text-dark text-decoration-none fw-semibold">Artigo</a>
       </div>
     </div>
-  </nav> 
+  </nav>
+
 
   <!-- BLOCO DE TRADUÇÃO -->
   <section class="py-5">
@@ -42,6 +42,7 @@
       <div class="text-center fs-1 mt-4 reveal" id="resultado"></div>
     </div>
   </section>
+  
 
   <!-- SEÇÃO INFORMATIVA -->
   <section class="py-5">
@@ -57,23 +58,35 @@
   <footer class="text-dark text-center py-4 bg-light mt-5">
     <h5 class="fw-bold mb-2">Contate-nos</h5>
     <p class="mb-1">hieroglifos@projeto.com.br</p>
-    <p class="mb-2">Instituto de Federal Catarinense Campus Concórdia</p>
+    <p class="mb-2">Instituto Federal Catarinense Campus Concórdia</p>
     <small>&copy; 2025 - Projeto Hieróglifos.</small>
   </footer>
 
+  <!-- SCRIPT DE TRADUÇÃO -->
   <script>
     function traduzir() {
-      const input = document.getElementById("transliterationInput").value;
+      const input = document.getElementById("transliterationInput").value.trim();
+      const resultadoEl = document.getElementById("resultado");
+
+      if (!input) {
+        resultadoEl.innerText = "Digite algo para traduzir.";
+        return;
+      }
+
+      resultadoEl.innerText = "Traduzindo...";
+
       fetch(`/api/traduzir?texto=${encodeURIComponent(input)}`)
         .then(res => res.json())
         .then(data => {
-          document.getElementById("resultado").innerText = data.resultado || "Nenhum resultado.";
+          console.log("Resposta da API:", data);
+          resultadoEl.innerText = data.resultado?.trim() || "Nenhum resultado.";
         })
         .catch(() => {
-          document.getElementById("resultado").innerText = "Erro ao traduzir.";
+          resultadoEl.innerText = "Erro ao traduzir.";
         });
     }
   </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -7,3 +7,4 @@ ScrollReveal().reveal('.reveal', {
   interval: 200,
   reset: true
 });
+

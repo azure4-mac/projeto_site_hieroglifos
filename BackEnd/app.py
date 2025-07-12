@@ -43,39 +43,63 @@ def get_hieroglyphs():
 def tradutor():
     return render_template('tradutor.html')
 
-import openai
+from openai import OpenAI
 from flask import request
+import re
+
+client = OpenAI(api_key="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")
+
 
 @app.route('/api/traduzir', methods=['GET'])
 def traduzir():
-    texto = request.args.get("texto", "")
-    if not texto:
+    texto_pt = request.args.get("texto", "").strip()
+    if not texto_pt:
         return jsonify({'erro': 'Texto não fornecido'}), 400
 
-    with connection_db.cursor() as cursor:
-        cursor.execute("SELECT symbol, gardiner FROM hieroglifo")
-        hieroglyphs = cursor.fetchall()
-        mapa = {h[1][0].lower(): h[0] for h in hieroglyphs if h[1]}
+    try:
+        # Traduzir PT → EN com GPT
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Você é um tradutor de português para inglês. Responda somente com a tradução direta."},
+                {"role": "user", "content": texto_pt}
+            ],
+            max_tokens=200
+        )
+        texto_en = response.choices[0].message.content.strip()
+        print(f"Texto traduzido: {texto_en}")
 
-    resultado = ''.join([mapa.get(c.lower(), c) for c in texto])
+        # Extrair palavras úteis
+        stopwords = {"the", "a", "an", "of", "in", "on", "and", "to", "is", "are", "for", "with"}
+        palavras = [p for p in re.findall(r'\b\w+\b', texto_en.lower()) if p not in stopwords]
+        print(f"Palavras extraídas: {palavras}")
 
-    if not resultado.strip() or request.args.get("usar_gpt", "false").lower() == "true":
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        prompt = f"Traduza o seguinte texto para hieróglifos egípcios: {texto}"
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4.0-turbo",
-                messages=[
-                    {"role": "system", "content": "Você é um tradutor de português para hieróglifos egípcios."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=100
-            )
-            resultado = response.choices[0].message.content.strip()
-        except Exception as e:
-            return jsonify({'erro': 'Erro ao acessar o ChatGPT', 'detalhe': str(e)}), 500
+        simbolos = []
+        traduzidos = set()
 
-    return jsonify({'resultado': resultado})
+        with connection_db.cursor() as cursor:
+            for palavra in palavras:
+                if palavra in traduzidos:
+                    continue
+                traduzidos.add(palavra)
+
+                cursor.execute(
+                    "SELECT symbol FROM hieroglifo WHERE LOWER(description) LIKE %s LIMIT 1",
+                    (f"%{palavra}%",)
+                )
+                res = cursor.fetchone()
+                print(f"Busca pela palavra '{palavra}': {res}")
+                if res:
+                    simbolos.append(res[0])
+
+        resultado = ''.join(simbolos) if simbolos else "?"
+        print(f"Resultado final (símbolos): {resultado}")
+
+        return jsonify({'resultado': resultado})
+
+    except Exception as e:
+        print(f"Erro: {str(e)}")
+        return jsonify({'erro': 'Erro ao processar a tradução', 'detalhe': str(e)}), 500
 
 
 if __name__ == '__main__':
