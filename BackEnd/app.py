@@ -47,7 +47,7 @@ from openai import OpenAI
 from flask import request
 import re
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="")
 
 
 @app.route('/api/traduzir', methods=['GET'])
