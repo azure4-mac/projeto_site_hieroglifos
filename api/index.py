@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import psycopg
 from flask import Flask, render_template, jsonify, redirect, url_for
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 load_dotenv()
 
@@ -100,5 +101,7 @@ def traduzir():
         return jsonify({'erro': 'Erro ao processar a tradução', 'detalhe': str(e)}), 500
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
+
+app.wsgi_app = ProxyFix(app.wsgi_app)
