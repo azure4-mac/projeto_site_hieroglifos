@@ -1,12 +1,12 @@
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import psycopg
 import os
 from flask import Flask, render_template, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-# load_dotenv()
+load_dotenv()
 
-# connection_db = psycopg.connect(os.getenv("DATABASE_URL"))
+connection_db = psycopg.connect(os.getenv("DATABASE_URL"))
 
 
 app = Flask(__name__)
@@ -27,19 +27,19 @@ def artigo():
 def tradutor():
     return render_template('tradutor.html')
 
-# @app.route('/api/hieroglyphs')
-# def get_hieroglyphs():
-#     with connection_db.cursor() as cursor:
-#         cursor.execute("SELECT symbol, gardiner, unicode_code, description FROM hieroglifo")
-#         data = cursor.fetchall()
-#     return jsonify([
-#         {
-#             "symbol": h[0],
-#             "gardiner": h[1],
-#             "unicode_code": h[2],
-#             "description": h[3]
-#         } for h in data
-#     ])
+@app.route('/api/hieroglyphs')
+def get_hieroglyphs():
+    with connection_db.cursor() as cursor:
+        cursor.execute("SELECT symbol, gardiner, unicode_code, description FROM hieroglifo")
+        data = cursor.fetchall()
+    return jsonify([
+        {
+            "symbol": h[0],
+            "gardiner": h[1],
+            "unicode_code": h[2],
+            "description": h[3]
+        } for h in data
+    ])
 
 
 # from openai import OpenAI
