@@ -101,7 +101,6 @@ def traduzir():
         return jsonify({'erro': 'Erro ao processar a tradução', 'detalhe': str(e)}), 500
 
 
+app.wsgi_app = ProxyFix(app.wsgi_app)
 if __name__ == "__main__":
     app.run(debug=True)
-
-app.wsgi_app = ProxyFix(app.wsgi_app)
