@@ -42,59 +42,59 @@ def get_hieroglyphs():
     ])
 
 
-from openai import OpenAI
-from flask import request
-import re
+# from openai import OpenAI
+# from flask import request
+# import re
 
-client = OpenAI(api_key="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")
+# client = OpenAI(api_key="")
 
 
-@app.route('/api/traduzir', methods=['GET'])
-def traduzir():
-    texto_pt = request.args.get("texto", "").strip()
-    if not texto_pt:
-        return jsonify({'erro': 'Texto não fornecido'}), 400
+# @app.route('/api/traduzir', methods=['GET'])
+# def traduzir():
+#     texto_pt = request.args.get("texto", "").strip()
+#     if not texto_pt:
+#         return jsonify({'erro': 'Texto não fornecido'}), 400
 
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "Você é um tradutor de português para inglês. Responda somente com a tradução direta."},
-                {"role": "user", "content": texto_pt}
-            ],
-            max_tokens=200
-        )
-        texto_en = response.choices[0].message.content.strip()
-        print(f"Texto traduzido: {texto_en}")
+#     try:
+#         response = client.chat.completions.create(
+#             model="gpt-4o-mini",
+#             messages=[
+#                 {"role": "system", "content": "Você é um tradutor de português para inglês. Responda somente com a tradução direta."},
+#                 {"role": "user", "content": texto_pt}
+#             ],
+#             max_tokens=200
+#         )
+#         texto_en = response.choices[0].message.content.strip()
+#         print(f"Texto traduzido: {texto_en}")
 
-        stopwords = {"the", "a", "an", "of", "in", "on", "and", "to", "is", "are", "for", "with"}
-        palavras = [p for p in re.findall(r'\b\w+\b', texto_en.lower()) if p not in stopwords]
-        print(f"Palavras extraídas: {palavras}")
+#         stopwords = {"the", "a", "an", "of", "in", "on", "and", "to", "is", "are", "for", "with"}
+#         palavras = [p for p in re.findall(r'\b\w+\b', texto_en.lower()) if p not in stopwords]
+#         print(f"Palavras extraídas: {palavras}")
 
-        simbolos = []
-        traduzidos = set()
+#         simbolos = []
+#         traduzidos = set()
 
-        with connection_db.cursor() as cursor:
-            for palavra in palavras:
-                if palavra in traduzidos:
-                    continue
-                traduzidos.add(palavra)
+#         with connection_db.cursor() as cursor:
+#             for palavra in palavras:
+#                 if palavra in traduzidos:
+#                     continue
+#                 traduzidos.add(palavra)
 
-                cursor.execute(
-                    "SELECT symbol FROM hieroglifo WHERE LOWER(description) LIKE %s LIMIT 1",(f"%{palavra}%",))
-                res = cursor.fetchone()
-                print(f"Busca pela palavra '{palavra}': {res}")
-                if res:
-                    simbolos.append(res[0])
+#                 cursor.execute(
+#                     "SELECT symbol FROM hieroglifo WHERE LOWER(description) LIKE %s LIMIT 1",(f"%{palavra}%",))
+#                 res = cursor.fetchone()
+#                 print(f"Busca pela palavra '{palavra}': {res}")
+#                 if res:
+#                     simbolos.append(res[0])
 
-        resultado = ''.join(simbolos) if simbolos else "?"
-        print(f"Resultado final (símbolos): {resultado}")
+#         resultado = ''.join(simbolos) if simbolos else "?"
+#         print(f"Resultado final (símbolos): {resultado}")
 
-        return jsonify({'resultado': resultado})
+#         return jsonify({'resultado': resultado})
 
-    except Exception as e:
-        print(f"Erro: {str(e)}")
-        return jsonify({'erro': 'Erro ao processar a tradução', 'detalhe': str(e)}), 500
+#     except Exception as e:
+#         print(f"Erro: {str(e)}")
+#         return jsonify({'erro': 'Erro ao processar a tradução', 'detalhe': str(e)}), 500
 
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
