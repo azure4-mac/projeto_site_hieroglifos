@@ -1,7 +1,6 @@
-import os
 from dotenv import load_dotenv
 import psycopg
-from flask import Flask, render_template, jsonify, redirect, url_for
+from flask import Flask, render_template, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 load_dotenv()
