@@ -1,13 +1,13 @@
 from dotenv import load_dotenv
 import psycopg
+import os
 from flask import Flask, render_template, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 load_dotenv()
+    
+connection_db = psycopg.connect(os.getenv("DATABASE_URL"))
 
-connection_db = psycopg.connect(
-    "dbname=mac user=postgres password=3f@db host=164.90.152.205 port=80"
-)
 
 app = Flask(__name__)
 
