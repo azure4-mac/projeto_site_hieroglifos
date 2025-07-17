@@ -24,25 +24,24 @@ def sinais():
 def artigo():
     return render_template('artigo.html')
 
-
-@app.route('/api/hieroglyphs', methods=['GET'])
-def get_hieroglyphs():
-    with connection_db.cursor() as cursor:
-        cursor.execute("SELECT symbol, gardiner, unicode_code, description FROM hieroglifo")
-        hieroglyphs = cursor.fetchall()
-        
-        result = [{
-            'symbol': h[0],
-            'gardiner': h[1],
-            'unicode_code': h[2],
-            'description': h[3]
-        } for h in hieroglyphs]
-
-    return jsonify(result)
-
 @app.route('/tradutor')
 def tradutor():
     return render_template('tradutor.html')
+
+@app.route('/api/hieroglyphs')
+def get_hieroglyphs():
+    with connection_db.cursor() as cursor:
+        cursor.execute("SELECT symbol, gardiner, unicode_code, description FROM hieroglifo")
+        data = cursor.fetchall()
+    return jsonify([
+        {
+            "symbol": h[0],
+            "gardiner": h[1],
+            "unicode_code": h[2],
+            "description": h[3]
+        } for h in data
+    ])
+
 
 from openai import OpenAI
 from flask import request
@@ -83,9 +82,7 @@ def traduzir():
                 traduzidos.add(palavra)
 
                 cursor.execute(
-                    "SELECT symbol FROM hieroglifo WHERE LOWER(description) LIKE %s LIMIT 1",
-                    (f"%{palavra}%",)
-                )
+                    "SELECT symbol FROM hieroglifo WHERE LOWER(description) LIKE %s LIMIT 1",(f"%{palavra}%",))
                 res = cursor.fetchone()
                 print(f"Busca pela palavra '{palavra}': {res}")
                 if res:
@@ -104,3 +101,5 @@ def traduzir():
 app.wsgi_app = ProxyFix(app.wsgi_app)
 if __name__ == "__main__":
     app.run(debug=True)
+
+handler = app
