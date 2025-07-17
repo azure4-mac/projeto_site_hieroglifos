@@ -9,7 +9,7 @@ connection_db = psycopg.connect(
     "dbname=mac user=postgres password=3f@db host=164.90.152.205 port=80"
 )
 
-app = Flask(__name__, static_folder='../FrontEnd/static', template_folder='../FrontEnd/templates')
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 @app.route('/')
 def index():
@@ -57,7 +57,6 @@ def traduzir():
         return jsonify({'erro': 'Texto não fornecido'}), 400
 
     try:
-        # Traduzir PT → EN com GPT
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -69,7 +68,6 @@ def traduzir():
         texto_en = response.choices[0].message.content.strip()
         print(f"Texto traduzido: {texto_en}")
 
-        # Extrair palavras úteis
         stopwords = {"the", "a", "an", "of", "in", "on", "and", "to", "is", "are", "for", "with"}
         palavras = [p for p in re.findall(r'\b\w+\b', texto_en.lower()) if p not in stopwords]
         print(f"Palavras extraídas: {palavras}")
