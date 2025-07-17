@@ -9,7 +9,7 @@ connection_db = psycopg.connect(
     "dbname=mac user=postgres password=3f@db host=164.90.152.205 port=80"
 )
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+app = Flask(__name__)
 
 @app.route('/')
 def index():
