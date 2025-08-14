@@ -1,57 +1,68 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pesquisar Sinais</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/sinais.css') }}" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisar Sinais</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sinais.css') }}" />
 </head>
 <body>
 
-  <!-- Cabeçalho -->
-  <header class="py-5 text-center text-light bg-dark" style="height: 45vh; overflow: hidden;">
-    <div class="container">
-      <h1 class="display-4 fw-bold">Hieróglifos Egípcios</h1>
-      <p class="lead">Explore os símbolos e seus significados.</p>
-    </div>
-  </header>
+    <nav id="navbarTopo" class="navbar navbar-expand-lg fixed-top bg-dark bg-opacity-75">
+        <div class="container">
+            <a class="navbar-brand text-light fw-bold" href="{{ url_for('index') }}">Hieróglifos</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-3">
+                    <li class="nav-item">
+                        <a href="{{ url_for('sinais') }}" class="nav-link text-light fw-semibold">Pesquise os Sinais</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('artigo') }}" class="nav-link text-light fw-semibold">Artigo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('tradutor') }}" class="nav-link text-light fw-semibold">Tradutor</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <header class="page-header py-5 text-center text-light bg-dark">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Hieróglifos Egípcios</h1>
+            <p class="lead">Explore os símbolos e seus significados.</p>
+        </div>
+    </header>
 
-  <!-- NAVBAR -->
-  <nav id="navbarTopo" class="navbar fixed-top bg-dark bg-opacity-75 shadow-sm">
-  <div class="container d-flex justify-content-center py-2">
-    <div class="d-flex gap-4">
-      <a href="{{ url_for('sinais') }}" class="nav-link text-light fw-semibold">Pesquise os Sinais</a>
-      <a href="{{ url_for('index') }}" class="nav-link text-light fw-semibold">Inicio</a>
-      <a href="{{ url_for('tradutor') }}" class="nav-link text-light fw-semibold">Tradutor</a>
-    </div>
-  </div>
-</nav>
+    <main class="container my-5">
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Buscar por código ou descrição..." />
+            </div>
+        </div>
 
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4" id="signalGrid">
+            </div>
 
-  <div class="container mt-4">
+        <div id="loading" class="text-center my-4" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+    </main>
 
-    <!-- Campo de busca -->
-    <div class="row mb-4">
-      <div class="col-md-8 offset-md-2">
-        <input type="text" class="form-control" id="searchInput" placeholder="Digite o código, nome ou categoria..." />
-      </div>
-    </div>
+    <footer class="text-dark text-center py-4 bg-light mt-5">
+        <small>&copy; <span id="current-year">2025</span> - Projeto Hieróglifos.</small>
+    </footer>
 
-    <!-- Grade de sinais -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4" id="signalGrid"></div>
-
-  </div>
-
-  <!-- Rodapé -->
-  <footer class="text-center py-4">
-    <p>&copy; 2025 - Projeto Hieróglifos</p>
-  </footer>
-
-  <!-- Bootstrap + script de filtro básico -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{{ url_for('static', filename='js/sinais.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='js/sinais.js') }}"></script>
+    <script>
+        document.getElementById("current-year").textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>

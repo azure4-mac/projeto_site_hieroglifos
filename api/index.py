@@ -27,21 +27,37 @@ def artigo():
 def tradutor():
     return render_template('tradutor.html')
 
-@app.route('/api/hieroglyphs')
-def get_hieroglyphs():
-    with connection_db.cursor() as cursor:
-        cursor.execute("SELECT symbol, gardiner, unicode_code, description FROM hieroglifo")
-        data = cursor.fetchall()
-    return jsonify([
-        {
-            "symbol": h[0],
-            "gardiner": h[1],
-            "unicode_code": h[2],
-            "description": h[3]
-        } for h in data
-    ])
+@app.route('/api/hieroglyphs', methods=['GET'])
+def get_all_hieroglyphs():
+    """
+    Endpoint otimizado com ORDENAÇÃO NATURAL para buscar todos os hieróglifos
+    e retorná-los como um único JSON.
+    """
+    try:
+        cursor = connection_db.cursor()
 
+        query = "SELECT symbol, gardiner, description FROM hieroglifo ORDER BY SUBSTRING(gardiner, 1, 1), LENGTH(gardiner), gardiner"
+        
+        cursor.execute(query)
+        
+        all_rows = cursor.fetchall()
+        
+        cursor.close()
 
+        hieroglyphs_list = []
+        for row in all_rows:
+            hieroglyphs_list.append({
+                'symbol': row[0],
+                'gardiner': row[1],
+                'description': row[2]
+            })
+
+        return jsonify(hieroglyphs_list)
+
+    except Exception as e:
+        print(f"Erro na API /api/hieroglyphs: {e}")
+        return jsonify({'erro': 'Falha ao buscar os dados do banco.', 'detalhe': str(e)}), 500
+    
 import os
 from flask import Flask, request, jsonify
 import google.generativeai as genai
@@ -53,11 +69,11 @@ try:
     if not api_key:
         raise ValueError("A chave de API do Google não foi encontrada. Defina a variável de ambiente GOOGLE_API_KEY.")
     genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-2.5-pro')
 except Exception as e:
+    model = None
     print(f"Erro ao configurar a API do Gemini: {e}")
 
-
-model = genai.GenerativeModel('gemini-2.5-flash')
 
 @app.route('/api/traduzir_imagem', methods=['POST'])
 def traduzir_imagem():
@@ -67,6 +83,9 @@ def traduzir_imagem():
     """
     if 'imagem' not in request.files:
         return jsonify({'erro': 'Nenhuma imagem fornecida'}), 400
+
+    if not model:
+        return jsonify({'erro': 'A API de tradução não está configurada corretamente no servidor.'}), 503
 
     file = request.files['imagem']
 
@@ -78,9 +97,7 @@ def traduzir_imagem():
         image = Image.open(file.stream)
 
         prompt_parts = [
-            "Traduza os hieróglifos egípcios desta imagem para uma mensagem clara em português, limite-se a 200 caracteres e seja direto.",
-            "Se não houver hieróglifos, responda apenas 'Nenhum hieróglifo encontrado'.",
-            "Já foi informado ao usuário que o contexto do texto prescisa de conhecimento especializado, não inclua essa mensagem em sua resposta.",
+            "Traduza os hieróglifos egípcios desta imagem para uma mensagem clara em português, limite-se a 200 caracteres e seja direto. Se não houver hieróglifos, responda apenas Nenhum hieróglifo encontrado. Já foi informado ao usuário que o contexto do texto prescisa de conhecimento eespecializado, não inclua essa mensagem em sua resposta.",
             image,
         ]
 

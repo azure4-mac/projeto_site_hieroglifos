@@ -1,94 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tradutor de Hieróglifos</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}" />
-  <script src="https://unpkg.com/scrollreveal"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tradutor de Hieróglifos por Imagem</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}" />
+    <script src="https://unpkg.com/scrollreveal"></script>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="py-5 text-center text-light bg-dark" style="height: 45vh; overflow: hidden;">
-    <div class="container">
-      <h1 class="display-4 fw-bold">Tradutor de Hieróglifos</h1>
-      <p class="lead">Digite uma transliteração e veja sua forma hieroglífica usando IA.</p>
-    </div>
-  </header>
-
-  <!-- NAVBAR -->
-    <nav id="navbarTopo" class="navbar fixed-top bg-dark bg-opacity-75 shadow-sm">
-      <div class="container d-flex justify-content-center py-2">
-        <div class="d-flex gap-4">
-          <a href="{{ url_for('sinais') }}" class="nav-link text-light fw-semibold">Pesquise os Sinais</a>
-          <a href="{{ url_for('index') }}" class="nav-link text-light fw-semibold">Inicio</a>
-          <a href="{{ url_for('tradutor') }}" class="nav-link text-light fw-semibold">Tradutor</a>
+    <header class="py-5 text-center text-light bg-dark" style="height: 45vh; overflow: hidden;">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Tradutor de Hieróglifos por Imagem</h1>
+            <p class="lead">Envie uma imagem com hieróglifos e deixe nossa IA traduzir para você.</p>
         </div>
-      </div>
+    </header>
+
+    <nav id="navbarTopo" class="navbar fixed-top bg-dark bg-opacity-75 shadow-sm">
+        <div class="container d-flex justify-content-center py-2">
+            <div class="d-flex gap-4">
+                <a href="{{ url_for('sinais') }}" class="nav-link text-light fw-semibold">Pesquise os Sinais</a>
+                <a href="{{ url_for('index') }}" class="nav-link text-light fw-semibold">Início</a>
+                <a href="{{ url_for('tradutor') }}" class="nav-link text-light fw-semibold">Tradutor</a>
+            </div>
+        </div>
     </nav>
 
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <form id="uploadForm" class="reveal">
+                        <input type="file" id="imageInput" accept="image/*" class="d-none" />
+                        
+                        <label for="imageInput" class="btn btn-outline-primary btn-lg w-100 mb-3">
+                            Clique para escolher uma imagem
+                        </label>
 
-
-  <!-- BLOCO DE TRADUÇÃO -->
-  <section class="py-5">
-    <div class="container">
-      <div class="row justify-content-center mb-4 reveal">
-        <div class="col-md-8">
-          <input type="text" class="form-control form-control-lg mb-3 shadow-sm" id="transliterationInput" placeholder="Ex: nfr ra" />
-          <button class="btn btn-primary w-100 btn-lg" onclick="traduzir()">Traduzir</button>
+                        <div id="imagePreviewContainer" class="mb-3" style="display: none;">
+                            <img id="imagePreview" src="#" alt="Pré-visualização da Imagem" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 btn-lg">Traduzir Imagem</button>
+                    </form>
+                    
+                    <div class="fs-4 mt-4 p-3 bg-light rounded shadow-sm reveal" id="resultado" style="min-height: 60px;">
+                        Aguardando uma imagem para traduzir...
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="text-center fs-1 mt-4 reveal" id="resultado"></div>
-    </div>
-  </section>
-  
+    </section>
+    
+    <section class="py-5">
+        <div class="container text-center reveal">
+            <h2 class="fw-bold mb-3">Como funciona?</h2>
+            <p class="text-muted mx-auto" style="max-width: 700px;">
+                O sistema utiliza a inteligência artificial do Google Gemini para analisar uma imagem, identificar os hieróglifos e traduzir seu significado para o português. Esta ferramenta é uma ponte entre o passado e a tecnologia atual.
+            </p>
+        </div>
+    </section>
 
-  <!-- SEÇÃO INFORMATIVA -->
-  <section class="py-5">
-    <div class="container text-center reveal">
-      <h2 class="fw-bold mb-3">Como funciona?</h2>
-      <p class="text-muted mx-auto" style="max-width: 700px;">
-        O sistema utiliza inteligência artificial para traduzir palavras transliteradas do egípcio antigo para seus correspondentes hieroglíficos. Você pode testar nomes de deuses, expressões clássicas ou frases simples. Esta ferramenta é uma ponte entre o passado e a tecnologia atual.
-      </p>
-    </div>
-  </section>
+    <footer class="text-dark text-center py-4 bg-light mt-5">
+        <h5 class="fw-bold mb-2">Contate-nos</h5>
+        <p class="mb-1">hieroglifos@projeto.com.br</p>
+        <p class="mb-2">Instituto Federal Catarinense Campus Concórdia</p>
+        <small>&copy; 2025 - Projeto Hieróglifos.</small>
+    </footer>
 
-  <!-- CONTATO -->
-  <footer class="text-dark text-center py-4 bg-light mt-5">
-    <h5 class="fw-bold mb-2">Contate-nos</h5>
-    <p class="mb-1">hieroglifos@projeto.com.br</p>
-    <p class="mb-2">Instituto Federal Catarinense Campus Concórdia</p>
-    <small>&copy; 2025 - Projeto Hieróglifos.</small>
-  </footer>
+    <script>
+        const uploadForm = document.getElementById("uploadForm");
+        const imageInput = document.getElementById("imageInput");
+        const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+        const imagePreview = document.getElementById("imagePreview");
+        const resultadoEl = document.getElementById("resultado");
 
-  <!-- SCRIPT DE TRADUÇÃO -->
-  <script>
-    function traduzir() {
-      const input = document.getElementById("transliterationInput").value.trim();
-      const resultadoEl = document.getElementById("resultado");
-
-      if (!input) {
-        resultadoEl.innerText = "Digite algo para traduzir.";
-        return;
-      }
-
-      resultadoEl.innerText = "Traduzindo...";
-
-      fetch(`/api/traduzir?texto=${encodeURIComponent(input)}`)
-        .then(res => res.json())
-        .then(data => {
-          console.log("Resposta da API:", data);
-          resultadoEl.innerText = data.resultado?.trim() || "Nenhum resultado.";
-        })
-        .catch(() => {
-          resultadoEl.innerText = "Erro ao traduzir.";
+        // Mostra a pré-visualização da imagem quando o usuário escolhe um arquivo
+        imageInput.addEventListener("change", function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                imagePreviewContainer.style.display = "block";
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+                resultadoEl.innerText = "Imagem pronta. Clique no botão para traduzir.";
+            }
         });
-    }
-  </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+        // Lida com o envio do formulário
+        uploadForm.addEventListener("submit", function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const file = imageInput.files[0];
+            if (!file) {
+                resultadoEl.innerText = "Por favor, escolha uma imagem primeiro.";
+                return;
+            }
+
+            resultadoEl.innerText = "Traduzindo... Isso pode levar alguns segundos.";
+
+            // Usa FormData para enviar o arquivo de imagem
+            const formData = new FormData();
+            formData.append("imagem", file); // A chave "imagem" deve ser a mesma no backend Flask
+
+            // Faz a requisição POST para a nova API
+            fetch("/api/traduzir_imagem", {
+                method: "POST",
+                body: formData,
+            })
+            .then(res => {
+                if (!res.ok) {
+                    // Se a resposta não for OK, lança um erro para o .catch
+                    throw new Error(`Erro do servidor: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                console.log("Resposta da API:", data);
+                if (data.erro) {
+                    resultadoEl.innerText = `Erro: ${data.erro}`;
+                } else {
+                    resultadoEl.innerText = data.resultado?.trim() || "Nenhum resultado encontrado.";
+                }
+            })
+            .catch(error => {
+                console.error("Erro na requisição:", error);
+                resultadoEl.innerText = "Ocorreu um erro ao tentar se comunicar com a API.";
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>

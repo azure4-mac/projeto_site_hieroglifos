@@ -1,5 +1,6 @@
 body{
-    background-color: #FAEFDE;
+  background-color: #FAEFDE;
+  padding-top: 70px; 
 }
 
 h2, h3, h4{
@@ -11,10 +12,46 @@ h2, h3, h4{
 }
 
 #navbarTopo.scrolled {
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  background-color: rgba(0, 0, 0, 0.95) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar {
   transition: transform 0.3s ease-in-out;
+}
+
+.hero-header {
+    height: 70vh;
+    overflow: hidden;
+}
+
+.carousel-caption h1,
+.carousel-caption h2,
+.carousel-caption p {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+body {
+    padding-top: 70px; 
+}
+
+.page-header {
+    height: 45vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.article-content {
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-justify {
+    text-align: justify;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
 }

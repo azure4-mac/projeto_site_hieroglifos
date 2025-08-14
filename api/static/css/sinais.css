@@ -1,49 +1,17 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #FAEFDE;
+    padding-top: 70px;
 }
 
-header {
-  background-color: #f8f9fa;
-  padding: 20px 0;
+.page-header {
+    height: 45vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.signal-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+#navbarTopo {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
-
-.signal-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.card-body {
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.fs-1 {
-  font-size: 3rem;
-}
-
-.text-muted{
-  color: #D8C29E
-}
-
-footer {
-  background-color: #f8f9fa;
-  padding: 20px 0;
-  color: #6c757d;
-}
-
-input[type="text"] {
-  font-size: 1.1rem;
-  padding: 10px;
-}
-
-@media (max-width: 768px) {
-  .card-body {
-    padding: 15px;
-  }
-}
-
