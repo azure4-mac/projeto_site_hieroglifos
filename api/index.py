@@ -42,59 +42,60 @@ def get_hieroglyphs():
     ])
 
 
-from openai import OpenAI
-from flask import request
-import re
+import os
+from flask import Flask, request, jsonify
+import google.generativeai as genai
+from PIL import Image
+import io
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+try:
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        raise ValueError("A chave de API do Google não foi encontrada. Defina a variável de ambiente GOOGLE_API_KEY.")
+    genai.configure(api_key=api_key)
+except Exception as e:
+    print(f"Erro ao configurar a API do Gemini: {e}")
 
 
-@app.route('/api/traduzir', methods=['GET'])
-def traduzir():
-    texto_pt = request.args.get("texto", "").strip()
-    if not texto_pt:
-        return jsonify({'erro': 'Texto não fornecido'}), 400
+model = genai.GenerativeModel('gemini-2.5-flash')
+
+@app.route('/api/traduzir_imagem', methods=['POST'])
+def traduzir_imagem():
+    """
+    Recebe uma imagem, envia para a API do Gemini para traduzir hieróglifos
+    e retorna o texto traduzido em português.
+    """
+    if 'imagem' not in request.files:
+        return jsonify({'erro': 'Nenhuma imagem fornecida'}), 400
+
+    file = request.files['imagem']
+
+    if file.filename == '':
+        return jsonify({'erro': 'Nenhum arquivo de imagem selecionado'}), 400
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "Você é um tradutor de português para inglês. Responda somente com a tradução direta."},
-                {"role": "user", "content": texto_pt}
-            ],
-            max_tokens=200
-        )
-        texto_en = response.choices[0].message.content.strip()
-        print(f"Texto traduzido: {texto_en}")
 
-        stopwords = {"the", "a", "an", "of", "in", "on", "and", "to", "is", "are", "for", "with"}
-        palavras = [p for p in re.findall(r'\b\w+\b', texto_en.lower()) if p not in stopwords]
-        print(f"Palavras extraídas: {palavras}")
+        image = Image.open(file.stream)
 
-        simbolos = []
-        traduzidos = set()
+        prompt_parts = [
+            "Traduza os hieróglifos egípcios desta imagem para uma mensagem clara em português, limite-se a 200 caracteres e seja direto.",
+            "Se não houver hieróglifos, responda apenas 'Nenhum hieróglifo encontrado'.",
+            "Já foi informado ao usuário que o contexto do texto prescisa de conhecimento especializado, não inclua essa mensagem em sua resposta.",
+            image,
+        ]
 
-        with connection_db.cursor() as cursor:
-            for palavra in palavras:
-                if palavra in traduzidos:
-                    continue
-                traduzidos.add(palavra)
+        print("Enviando imagem e prompt para o Gemini...")
 
-                cursor.execute(
-                    "SELECT symbol FROM hieroglifo WHERE LOWER(description) LIKE %s LIMIT 1",(f"%{palavra}%",))
-                res = cursor.fetchone()
-                print(f"Busca pela palavra '{palavra}': {res}")
-                if res:
-                    simbolos.append(res[0])
+        response = model.generate_content(prompt_parts)
 
-        resultado = ''.join(simbolos) if simbolos else "?"
-        print(f"Resultado final (símbolos): {resultado}")
+        resultado_traducao = response.text.strip()
+        print(f"Resposta do Gemini: {resultado_traducao}")
 
-        return jsonify({'resultado': resultado})
+        return jsonify({'resultado': resultado_traducao})
 
     except Exception as e:
-        print(f"Erro: {str(e)}")
-        return jsonify({'erro': 'Erro ao processar a tradução', 'detalhe': str(e)}), 500
+        print(f"Erro inesperado: {str(e)}")
+        return jsonify({'erro': 'Ocorreu um erro ao processar a imagem', 'detalhe': str(e)}), 500
 
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
