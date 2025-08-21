@@ -10,22 +10,34 @@
 </head>
 <body>
 
-    <header class="py-5 text-center text-light bg-dark" style="height: 45vh; overflow: hidden;">
+    <nav id="navbarTopo" class="navbar navbar-expand-lg fixed-top bg-dark bg-opacity-75 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand text-light fw-bold" href="{{ url_for('index') }}">Hieróglifos</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-3">
+                    <li class="nav-item">
+                        <a href="{{ url_for('sinais') }}" class="nav-link text-light fw-semibold">Pesquise os Sinais</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('index') }}" class="nav-link text-light fw-semibold">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('tradutor') }}" class="nav-link text-light fw-semibold">Tradutor</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header py-5 text-center text-light bg-dark">
         <div class="container">
             <h1 class="display-4 fw-bold">Tradutor de Hieróglifos por Imagem</h1>
             <p class="lead">Envie uma imagem com hieróglifos e deixe nossa IA traduzir para você.</p>
         </div>
     </header>
-
-    <nav id="navbarTopo" class="navbar fixed-top bg-dark bg-opacity-75 shadow-sm">
-        <div class="container d-flex justify-content-center py-2">
-            <div class="d-flex gap-4">
-                <a href="{{ url_for('sinais') }}" class="nav-link text-light fw-semibold">Pesquise os Sinais</a>
-                <a href="{{ url_for('index') }}" class="nav-link text-light fw-semibold">Início</a>
-                <a href="{{ url_for('tradutor') }}" class="nav-link text-light fw-semibold">Tradutor</a>
-            </div>
-        </div>
-    </nav>
 
     <section class="py-5">
         <div class="container">
@@ -76,7 +88,6 @@
         const imagePreview = document.getElementById("imagePreview");
         const resultadoEl = document.getElementById("resultado");
 
-        // Mostra a pré-visualização da imagem quando o usuário escolhe um arquivo
         imageInput.addEventListener("change", function() {
             const file = this.files[0];
             if (file) {
@@ -90,9 +101,8 @@
             }
         });
 
-        // Lida com o envio do formulário
         uploadForm.addEventListener("submit", function(event) {
-            event.preventDefault(); // Impede o envio padrão do formulário
+            event.preventDefault();
 
             const file = imageInput.files[0];
             if (!file) {
@@ -102,18 +112,14 @@
 
             resultadoEl.innerText = "Traduzindo... Isso pode levar alguns segundos.";
 
-            // Usa FormData para enviar o arquivo de imagem
             const formData = new FormData();
-            formData.append("imagem", file); // A chave "imagem" deve ser a mesma no backend Flask
-
-            // Faz a requisição POST para a nova API
+            formData.append("imagem", file);
             fetch("/api/traduzir_imagem", {
                 method: "POST",
                 body: formData,
             })
             .then(res => {
                 if (!res.ok) {
-                    // Se a resposta não for OK, lança um erro para o .catch
                     throw new Error(`Erro do servidor: ${res.status}`);
                 }
                 return res.json();

@@ -104,6 +104,5 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Inicia o carregamento
     initialLoad();
 });

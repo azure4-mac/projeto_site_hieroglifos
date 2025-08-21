@@ -69,7 +69,7 @@ try:
     if not api_key:
         raise ValueError("A chave de API do Google não foi encontrada. Defina a variável de ambiente GOOGLE_API_KEY.")
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-pro')
+    model = genai.GenerativeModel('gemini-1.5-pro-latest')
 except Exception as e:
     model = None
     print(f"Erro ao configurar a API do Gemini: {e}")
